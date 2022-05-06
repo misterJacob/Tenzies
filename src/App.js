@@ -1,6 +1,6 @@
 import React from "react";
 import { nanoid } from "nanoid";
-
+import Confetti from "react-confetti";
 import Die from "./Die";
 
 function App() {
@@ -10,7 +10,7 @@ function App() {
     React.useEffect(() => {
       const allHeld = dice.every((die) => die.isHeld);
       const firstValue = dice[0].value;
-      const allSameValue = dice.every((die) => die.value === firstValue);
+      const allSameValue = dice.every(die => die.value === firstValue);
       if (allHeld && allSameValue) {
         setTenzies(true);
         console.log("You won!");
@@ -36,17 +36,22 @@ function App() {
   }
   // console.log(allNewDice());
   function rollDice() {
-    setDice((oldDice) =>
-      oldDice.map(die => {
-        return die.isHeld ?
-         die : 
-         generateNewDie();
-      })
-    );
+    if(!tenzies){
+      setDice((oldDice) =>
+        oldDice.map(die => {
+          return die.isHeld ?
+           die : 
+           generateNewDie();
+        })
+      );
+    }else{
+      setTenzies(false)
+      setDice(allNewDice())
+    }
+
   }
 
   function holdDice(id) {
-    // Dos NOT hold the Dice
 
     setDice((oldDice) =>
       oldDice.map((die) => {
@@ -54,12 +59,6 @@ function App() {
       })
     );
 
-    // same as func on top
-    // setDice((prevDice) =>
-    //   prevDice.map((die) => {
-    //       return die.id === id ? { ...die, isHeld: !die.isHeld } : die;
-    //     })
-    //   );
     console.log(id);
   }
 
@@ -74,6 +73,7 @@ function App() {
 
   return (
     <div className="main-tenzies">
+      {tenzies && <Confetti/>}
       <div className=" tenzies-container">
         <div className="tenzies-box">
           <h2 className="title">Tenzies</h2>
@@ -82,8 +82,11 @@ function App() {
             current value between rolls.
           </p>
           <div className="boxes">{diceElements}</div>
-          <button className="btn" onClick={rollDice}>
-            Roll
+          <button 
+          className="btn" 
+          onClick={rollDice}
+          >
+           { tenzies ? "New Gam" : " Roll" }
           </button>
         </div>
       </div>
